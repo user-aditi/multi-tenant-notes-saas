@@ -1,0 +1,43 @@
+/* Add to frontend/src/index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+}
+
+@layer utilities {
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-4 {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .react-quill .ql-toolbar {
+    border: none;
+    padding: 8px;
+  }
+  
+  .react-quill .ql-container {
+    border: none;
+  }
+  
+  .react-quill .ql-editor {
+    padding: 12px;
+    min-height: 200px;
+  }
+}
