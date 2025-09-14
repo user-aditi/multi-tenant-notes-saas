@@ -25,7 +25,7 @@ const renderNoteContent = (content) => {
   );
 };
 
-// Activity Chart Component
+
 const ActivityChart = ({ notes, tenantSlug }) => {
   const last7Days = Array.from({length: 7}, (_, i) => {
     const date = new Date();
@@ -68,14 +68,30 @@ const ActivityChart = ({ notes, tenantSlug }) => {
 };
 
 // Subscription Management Modal (Admin Only)
-const SubscriptionModal = ({ isOpen, onClose, user, onUpgrade }) => {
+const SubscriptionModal = ({ isOpen, onClose, user, onUpgrade, onDowngrade }) => {
   const [loading, setLoading] = useState(false);
-  
+  const [error, setError] = useState('');
+
   const handleUpgrade = async () => {
     setLoading(true);
+    setError('');
     await onUpgrade();
     setLoading(false);
     onClose();
+  };
+
+  const handleDowngrade = async () => {
+    setLoading(true);
+    setError('');
+    const result = await onDowngrade();
+    if (!result.success) {
+      if (result.needs_action) {
+        setError(result.error);
+      }
+    } else {
+      onClose();
+    }
+    setLoading(false);
   };
 
   if (!isOpen) return null;
@@ -85,7 +101,7 @@ const SubscriptionModal = ({ isOpen, onClose, user, onUpgrade }) => {
       <div className="bg-white dark:bg-gray-800 rounded-xl p-8 max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            {user?.tenant?.subscription_plan === 'pro' ? 'Pro Plan Active' : 'Upgrade to Pro'}
+            Manage Subscription
           </h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
             <X className="w-6 h-6" />
@@ -93,49 +109,40 @@ const SubscriptionModal = ({ isOpen, onClose, user, onUpgrade }) => {
         </div>
         
         {user?.tenant?.subscription_plan === 'pro' ? (
-          <div className="text-center">
-            <Crown className="w-16 h-16 mx-auto mb-4 text-purple-600" />
-            <p className="text-gray-600 dark:text-gray-300">
-              Your organization is on the Pro plan with unlimited notes and premium features.
+          <div className="space-y-6">
+            <p className="text-center text-gray-600 dark:text-gray-300">
+              Your organization is on the Pro plan with unlimited notes.
             </p>
+            {error && (
+              <div className="bg-red-50 dark:bg-red-900/20 p-3 rounded-lg text-center">
+                <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
+              </div>
+            )}
+            <button
+              onClick={handleDowngrade}
+              disabled={loading}
+              className="w-full px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold disabled:opacity-50"
+            >
+              {loading ? 'Processing...' : 'Downgrade to Free Plan'}
+            </button>
           </div>
         ) : (
+          // ... The existing Upgrade UI is here, no changes needed ...
           <div className="space-y-6">
-            <div className="text-center">
-              <Crown className="w-16 h-16 mx-auto mb-4 text-purple-600" />
-            </div>
-            
-            <div className="space-y-3">
-              <div className="flex items-center">
-                <span className="text-green-500 mr-2">✓</span>
-                <span className="text-gray-700 dark:text-gray-300">Unlimited notes</span>
-              </div>
-              <div className="flex items-center">
-                <span className="text-green-500 mr-2">✓</span>
-                <span className="text-gray-700 dark:text-gray-300">Advanced search & filtering</span>
-              </div>
-              <div className="flex items-center">
-                <span className="text-green-500 mr-2">✓</span>
-                <span className="text-gray-700 dark:text-gray-300">Export to multiple formats</span>
-              </div>
-              <div className="flex items-center">
-                <span className="text-green-500 mr-2">✓</span>
-                <span className="text-gray-700 dark:text-gray-300">Priority support</span>
-              </div>
-            </div>
-            
-            <div className="text-center">
-              <div className="text-3xl font-bold text-gray-900 dark:text-white">$9.99</div>
-              <div className="text-gray-500 dark:text-gray-400">per month</div>
-            </div>
-            
-            <button
-              onClick={handleUpgrade}
-              disabled={loading}
-              className="w-full px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-colors font-semibold disabled:opacity-50"
-            >
-              {loading ? 'Upgrading...' : 'Upgrade Now'}
-            </button>
+             <div className="text-center"><Crown className="w-16 h-16 mx-auto mb-4 text-purple-600" /></div>
+             <div className="space-y-3">
+               <div className="flex items-center"><span className="text-green-500 mr-2">✓</span><span className="text-gray-700 dark:text-gray-300">Unlimited notes</span></div>
+               <div className="flex items-center"><span className="text-green-500 mr-2">✓</span><span className="text-gray-700 dark:text-gray-300">Advanced search & filtering</span></div>
+               <div className="flex items-center"><span className="text-green-500 mr-2">✓</span><span className="text-gray-700 dark:text-gray-300">Export to multiple formats</span></div>
+               <div className="flex items-center"><span className="text-green-500 mr-2">✓</span><span className="text-gray-700 dark:text-gray-300">Priority support</span></div>
+             </div>
+             <div className="text-center">
+               <div className="text-3xl font-bold text-gray-900 dark:text-white">$9.99</div>
+               <div className="text-gray-500 dark:text-gray-400">per month</div>
+             </div>
+             <button onClick={handleUpgrade} disabled={loading} className="w-full px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-colors font-semibold disabled:opacity-50">
+               {loading ? 'Upgrading...' : 'Upgrade Now'}
+             </button>
           </div>
         )}
       </div>
@@ -263,7 +270,17 @@ const NoteCard = ({ note, onEdit, onDelete, tenantSlug, formatDate }) => (
 // Main Dashboard Component
 const Dashboard = () => {
   const { user, logout, isAdmin } = useAuth();
-  const { notes, loading, error, meta, createNote, deleteNote, upgradeTenant } = useNotes();
+  const { 
+  notes, 
+  loading, 
+  error, 
+  meta, 
+  refetch, 
+  upgradeTenant, 
+  downgradeTenant, 
+  deleteNote, 
+  updateNote  
+} = useNotes();
   
   // State Management
   const [showEditor, setShowEditor] = useState(false);
@@ -275,6 +292,20 @@ const Dashboard = () => {
   // Get tenant slug for conditional styling
   const tenantSlug = user?.tenant?.slug || 'acme';
 
+  const theme = {
+    'acme': {
+      bg: 'bg-blue-600',
+      hoverBg: 'hover:bg-blue-700',
+      ring: 'focus:ring-blue-500'
+    },
+    'globex': {
+      bg: 'bg-green-600',
+      hoverBg: 'hover:bg-green-700',
+      ring: 'focus:ring-green-500'
+    }
+  };
+  const currentTheme = theme[tenantSlug] || theme['acme']; 
+  
   // Helper functions
   const isThisMonth = (date) => {
     const now = new Date();
@@ -310,7 +341,7 @@ const Dashboard = () => {
     toast.success('📥 Notes exported successfully!');
   };
 
-  // Event Handlers
+    // Event Handlers
   const handleCreateNote = () => {
     setEditingNote(null);
     setShowEditor(true);
@@ -354,6 +385,7 @@ const Dashboard = () => {
         onSave={() => {
           setShowEditor(false);
           setEditingNote(null);
+          refetch();
         }}
         onCancel={() => {
           setShowEditor(false);
@@ -400,10 +432,10 @@ const Dashboard = () => {
               {isAdmin && (
                 <button
                   onClick={() => setShowSubscriptionModal(true)}
-                  className={`px-4 py-2 rounded-lg transition-all transform hover:scale-105 shadow-lg ${
+                  className={`px-4 py-2 rounded-lg transition-all shadow-lg ${
                     user?.tenant?.subscription_plan === 'free'
-                      ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700'
-                      : 'bg-gray-500 text-white hover:bg-gray-600'
+                      ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white transform hover:scale-105'
+                      : 'bg-purple-100 text-purple-800 cursor-default'
                   }`}
                 >
                   <div className="flex items-center">
@@ -533,11 +565,7 @@ const Dashboard = () => {
               <button
                 onClick={handleCreateNote}
                 disabled={meta.limit_reached}
-                className={`inline-flex items-center px-4 py-2 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
-                  tenantSlug === 'acme' 
-                    ? 'bg-blue-600 hover:bg-blue-700' 
-                    : 'bg-green-600 hover:bg-green-700'
-                }`}
+                className={`inline-flex items-center px-4 py-2 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${currentTheme.bg} ${currentTheme.hoverBg}`}
               >
                 <PlusCircle className="w-4 h-4 mr-2" />
                 New Note
@@ -598,10 +626,11 @@ const Dashboard = () => {
         {/* Subscription Modal (Admin Only) */}
         {isAdmin && (
           <SubscriptionModal
-            isOpen={showSubscriptionModal}
-            onClose={() => setShowSubscriptionModal(false)}
-            user={user}
-            onUpgrade={handleUpgrade}
+              isOpen={showSubscriptionModal}
+              onClose={() => setShowSubscriptionModal(false)}
+              user={user}
+              onUpgrade={upgradeTenant}
+              onDowngrade={downgradeTenant} // <-- Pass the function here
           />
         )}
       </main>

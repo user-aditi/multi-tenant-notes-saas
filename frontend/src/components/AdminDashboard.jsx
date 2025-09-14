@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Users, UserPlus, Mail, Shield, Trash2, Copy, X, Clock, CheckCircle, ExternalLink } from 'lucide-react';
+import { Users, UserPlus, Mail, Shield, Trash2, Copy, X, Clock, CheckCircle, ArrowLeft } from 'lucide-react';
 import api from '../utils/api';
 import toast from 'react-hot-toast';
+import { Link } from 'react-router-dom'; 
 
 const AdminDashboard = () => {
   const { user, isAdmin } = useAuth();
@@ -97,8 +98,12 @@ const AdminDashboard = () => {
     <div className="space-y-6">
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-6">
-        <div className="flex justify-between items-center">
-          <div>
+        <div className="flex justify-between items-start">
+            <Link to="/dashboard" className="flex items-center text-sm text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 mb-4 sm:mb-0">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Dashboard
+            </Link>
+          <div className="text-right">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
               User Management
             </h2>

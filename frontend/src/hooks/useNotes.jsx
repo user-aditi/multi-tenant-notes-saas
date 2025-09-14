@@ -3,12 +3,13 @@ import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 
+
 export const useNotes = () => {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [meta, setMeta] = useState({});
-  const { user } = useAuth();
+  const { user, updateUserContext  } = useAuth();
 
   const fetchNotes = async () => {
     if (!user) return;
@@ -150,8 +151,10 @@ export const useNotes = () => {
     const loadingToast = toast.loading('Upgrading to Pro plan...');
     
     try {
-      await api.post(`/tenants/${user.tenant.slug}/upgrade`);
+      const response = await api.post(`/tenants/${user.tenant.slug}/upgrade`);
       
+      updateUserContext(response.data.user);
+
       // Refresh user data and notes to get updated subscription status
       await fetchNotes();
       
@@ -166,11 +169,6 @@ export const useNotes = () => {
         duration: 5000,
       });
       
-      // Trigger a page refresh to update user context
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-      
       return { success: true };
     } catch (error) {
       const errorMsg = error.response?.data?.error || 'Failed to upgrade';
@@ -183,6 +181,33 @@ export const useNotes = () => {
       return { success: false, error: errorMsg };
     }
   };
+
+  const downgradeTenant = async () => {
+  if (!user?.tenant?.slug) {
+    toast.error('❌ Unable to downgrade: tenant information not found');
+    return { success: false, error: 'Tenant not found' };
+  }
+
+  const loadingToast = toast.loading('Downgrading to Free plan...');
+  try {
+    const response = await api.post(`/tenants/${user.tenant.slug}/downgrade`);
+    updateUserContext(response.data.user);
+    toast.success('✅ Successfully downgraded to the Free plan.', {
+      id: loadingToast,
+      duration: 4000,
+    });
+    
+    return { success: true };
+
+  } catch (error) {
+    const errorMsg = error.response?.data?.error || 'Failed to downgrade';
+    toast.error(`❌ ${errorMsg}`, {
+      id: loadingToast,
+      duration: 5000,
+    });
+    return { success: false, error: errorMsg, needs_action: error.response?.data?.needs_action };
+  }
+};
 
   // Initial fetch when user is available
   useEffect(() => {
@@ -228,6 +253,7 @@ export const useNotes = () => {
     updateNote,
     deleteNote,
     upgradeTenant,
+    downgradeTenant,
     refetch: fetchNotes
   };
 };

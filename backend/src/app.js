@@ -67,7 +67,7 @@ app.use('/api/tenants', tenantRoutes);
 app.use('/api/admin', adminRoutes);
 
 // Only handle API 404s
-app.all('/api/*', (req, res) => {
+app.use('/api', (req, res, next) => {
   res.status(404).json({
     error: 'API Route not found',
     path: req.originalUrl,

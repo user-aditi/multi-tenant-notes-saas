@@ -20,6 +20,12 @@ export const AuthProvider = ({ children }) => {
     checkAuthStatus();
   }, []);
 
+  const updateUserContext = (newUserData) => {
+    // This function will update the user state and persist it to localStorage
+    setUser(newUserData);
+    localStorage.setItem('user_data', JSON.stringify(newUserData));
+  };
+
   const checkAuthStatus = async () => {
     try {
       const token = localStorage.getItem('auth_token');
@@ -69,7 +75,8 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     isAuthenticated: !!user,
-    isAdmin: user?.role === 'admin'
+    isAdmin: user?.role === 'admin',
+    updateUserContext,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -2,7 +2,7 @@
   "name": "multi-tenant-notes-backend",
   "version": "1.0.0",
   "engines": {
-    "node": "22.x"
+    "node": "20.x"
   },
   "scripts": {
     "start": "node src/server.js",
