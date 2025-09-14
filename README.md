@@ -1,166 +1,122 @@
-# Multi-Tenant SaaS Notes Application 🚀
+<div align="center">
 
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
-![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
-![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+# **Multi-Tenant Notes SaaS**
 
-This is a full-stack, multi-tenant SaaS application that allows different organizations to securely manage their notes. It features role-based access control, subscription plan limitations, and a clean, modern user interface.
+A secure, full-stack, multi-tenant notes application built with React, Node.js, and PostgreSQL. This project demonstrates a scalable SaaS architecture where each user's data is completely isolated.
 
-## ✨ Live Demo
+![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
+![GitHub last commit](https://img.shields.io/github/last-commit/user-aditi/multi-tenant-notes-saas)
+![Repo size](https://img.shields.io/github/repo-size/user-aditi/multi-tenant-notes-saas)
 
-* **Frontend:** [Your Vercel Frontend URL Here]
-* **Backend API:** [Your Vercel Backend URL Here]
+</div>
 
 ---
 
-## 📋 Features
+### **✨ Live Demo**
 
-* **Multi-Tenancy:** Secure data isolation between different tenants (e.g., Acme and Globex).
-* **Authentication:** JWT-based authentication for secure access.
-* **Authorization:** Two distinct user roles:
-    * **Admin:** Can manage users (invite/remove) and upgrade the organization's subscription.
-    * **Member:** Can create, read, update, and delete notes.
-* **Subscription Gating:**
-    * **Free Plan:** Limited to a maximum of 3 notes per organization.
-    * **Pro Plan:** Unlimited notes.
-* **CRUD API:** A full set of API endpoints for managing notes.
-* **Admin Dashboard:** A dedicated interface for admins to manage their team and view pending invitations.
-* **Modern Frontend:** A responsive and user-friendly interface built with React and Tailwind CSS, featuring a dark mode toggle.
+* **Frontend Deployed on Vercel:** [**my-notes-app-frontend-ten.vercel.app**](https://my-notes-app-frontend-ten.vercel.app/)
+* **Backend API Status:** [**my-notes-app-backend-zeta.vercel.app**](https://my-notes-app-backend-zeta.vercel.app/)
 
 ---
 
-## 🛠️ Tech Stack
+### **📸 Screenshots**
 
-| Area      | Technologies                                                      |
-| :-------- | :---------------------------------------------------------------- |
-| **Backend** | Node.js, Express, PostgreSQL (Neon), JWT, bcryptjs                |
-| **Frontend**| React (Vite), Tailwind CSS, Axios, React Router, Lucide Icons     |
-| **Deployment**| Vercel                                                            |
+| Login & Authentication                      | Main Notes Dashboard                        |
+| :------------------------------------------: | :-------------------------------------------: |
+| *![Login Page](./frontend/src/assets/login.png)* | *![Notes Dashboard](./frontend/src//assets/dashboard.png)* |
 
 ---
 
-## 🏢 Multi-Tenancy Approach
+### **🚀 Core Features**
 
-This project implements a **Shared Schema, Shared Database** approach using a `tenant_slug` column as the discriminator.
-
-* All data for all tenants resides in the same set of tables (`users`, `notes`, etc.).
-* Each table that contains tenant-specific data has a `tenant_slug` column.
-* Every database query is strictly filtered by the `tenant_slug` of the authenticated user, which is extracted from their JWT.
-
-This approach was chosen for its simplicity, cost-effectiveness, and ease of management for an application of this scale. It avoids the complexity of managing multiple schemas or databases while still providing robust data isolation at the application layer.
+* **🔐 Secure JWT Authentication:** Stateless and secure user authentication using JSON Web Tokens.
+* **🏢 True Multi-Tenancy:** A robust architecture ensuring each user's (tenant's) data is strictly isolated at the database level using foreign key constraints.
+* **✍️ Full CRUD Functionality:** Users can seamlessly Create, Read, Update, and Delete their notes.
+* **📱 Responsive UI/UX:** A clean and modern user interface built with Vite + React and styled with Tailwind CSS for a great experience on any device.
+* **🚄 Type-Safe Backend:** A powerful RESTful API built with Node.js and Express, leveraging Prisma ORM for type-safe database interactions with a PostgreSQL database.
 
 ---
 
-## 🚀 Getting Started Locally
+### **💡 Technology Choices & Architecture**
 
-### Prerequisites
+This project was built with a modern, scalable tech stack, prioritizing developer experience and type safety.
 
-* Node.js (v20.x or later)
-* `npm` or `yarn`
-* A PostgreSQL database (e.g., a free tier from [Neon](https://neon.tech/))
+* **Frontend:** **Vite + React** was chosen for its blazing-fast development server and optimized build process. **Tailwind CSS** provides a utility-first approach to styling, enabling rapid UI development.
+* **Backend:** **Express.js** offers a minimalist and flexible foundation for the API. **Prisma** was selected as the ORM to bridge the application with the PostgreSQL database, providing incredible autocompletion and ensuring all database queries are type-safe, which drastically reduces runtime errors.
+* **Database:** A **PostgreSQL** database hosted on **Neon** was used for its reliability and robust feature set suitable for relational data.
+* **Deployment:** The entire application (both frontend and backend services) is deployed on **Vercel** for its seamless Git integration, automatic deployments, and serverless function support.
 
-### 1. Backend Setup
+---
 
-```bash
-# 1. Navigate to the backend directory
-cd backend
+### **⚙️ Getting Started Locally**
 
-# 2. Install dependencies
-npm install
+To get a local copy up and running, please follow these simple steps.
 
-# 3. Create a .env file from the example
-cp .env.example .env
-````
+#### **Prerequisites**
 
-**4. Configure your `.env` file:**
-Update the `backend/.env` file with your database credentials and a secure JWT secret.
+* Node.js (v18.x or later)
+* Git
 
-```env
-NODE_ENV=development
-PORT=5000
-JWT_SECRET=your-super-secret-jwt-key-here
-FRONTEND_URL=http://localhost:5173
+#### **Installation & Setup**
 
-# Your PostgreSQL Connection String Details
-DB_HOST=your-database-host
-DB_PORT=5432
-DB_NAME=your-database-name
-DB_USER=your-database-user
-DB_PASSWORD=your-database-password
-```
+1.  **Clone the repo**
+    ```sh
+    git clone [https://github.com/user-aditi/multi-tenant-notes-saas.git](https://github.com/user-aditi/multi-tenant-notes-saas.git)
+    cd multi-tenant-notes-saas
+    ```
 
-**5. Set up the Database:**
-Connect to your PostgreSQL database using a client like `psql` or TablePlus and run the SQL script located at `backend/src/models/database.sql`. This will create all the necessary tables and seed the initial test accounts.
+2.  **Backend Setup**
+    ```sh
+    cd backend
+    npm install
+    # Create a .env file based on .env.example
+    cp .env.example .env
+    # Add your database URL and other secrets to the new .env file
+    npx prisma migrate dev
+    npm run dev
+    ```
 
-**6. Run the Backend Server:**
+3.  **Frontend Setup**
+    ```sh
+    cd frontend
+    npm install
+    # Create a .env file based on .env.example
+    cp .env.example .env
+    npm run dev
+    ```
 
-```bash
-npm run dev
-```
+---
 
-The backend API will be running at `http://localhost:5000`.
+### **🔌 API Endpoints**
 
-### 2\. Frontend Setup
+All protected routes require an `Authorization: Bearer <token>` header.
 
-```bash
-# 1. Open a new terminal and navigate to the frontend directory
-cd frontend
+| Method   | Endpoint             | Protection | Description                      |
+| :------- | :------------------- | :--------- | :------------------------------- |
+| `POST`   | `/api/auth/register` | Public     | Registers a new user.            |
+| `POST`   | `/api/auth/login`    | Public     | Logs in a user and returns a JWT.|
+| `GET`    | `/api/notes`         | Protected  | Fetches all notes for the authenticated user. |
+| `POST`   | `/api/notes`         | Protected  | Creates a new note for the authenticated user. |
+| `PUT`    | `/api/notes/:id`     | Protected  | Updates a specific note by its ID. |
+| `DELETE` | `/api/notes/:id`     | Protected  | Deletes a specific note by its ID. |
 
-# 2. Install dependencies
-npm install
+---
 
-# 3. Create a .env file from the example
-cp .env.example .env
-```
+### **🤝 Contributing**
 
-**4. Configure your `.env` file:**
-Ensure the `frontend/.env` file points to your local backend server.
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-```env
-VITE_API_URL=http://localhost:5000
-```
+Please see the `CONTRIBUTING.md` file for details on our code of conduct and the process for submitting pull requests.
 
-**5. Run the Frontend Development Server:**
+---
 
-```bash
-npm run dev
-```
+### **📜 License**
 
-The React application will be available at `http://localhost:5173`.
+Distributed under the MIT License. See `LICENSE` for more information.
 
------
+---
 
-## 📡 API Endpoints
+### **👤 Author**
 
-The base URL for the API is `/api`. All endpoints below require a `Bearer` token unless specified otherwise.
-
-| Endpoint                     | Method | Auth? | Admin? | Description                                      |
-| :--------------------------- | :----- | :---- | :----- | :----------------------------------------------- |
-| `/auth/login`                | POST   | No    | No     | Logs in a user and returns a JWT.                |
-| `/auth/register-tenant`      | POST   | No    | No     | Creates a new tenant and an admin user.          |
-| `/auth/profile`              | GET    | Yes   | No     | Retrieves the current user's profile.            |
-| `/notes`                     | POST   | Yes   | No     | Creates a new note.                              |
-| `/notes`                     | GET    | Yes   | No     | Lists notes (all for admin, own for member).     |
-| `/notes/:id`                 | GET    | Yes   | No     | Retrieves a specific note.                       |
-| `/notes/:id`                 | PUT    | Yes   | No     | Updates a specific note.                         |
-| `/notes/:id`                 | DELETE | Yes   | No     | Deletes a specific note.                         |
-| `/tenants/:slug/upgrade`     | POST   | Yes   | Yes    | Upgrades a tenant's subscription to 'pro'.       |
-| `/admin/users`               | GET    | Yes   | Yes    | Lists all users and invitations for the tenant.  |
-| `/admin/invite-user`         | POST   | Yes   | Yes    | Creates an invitation for a new user.            |
-| `/admin/users/:userId`       | DELETE | Yes   | Yes    | Removes a user from the tenant.                  |
-| `/health`                    | GET    | No    | No     | Health check endpoint.                           |
-
------
-
-## ☁️ Deployment
-
-This project is configured for deployment on **Vercel**.
-
-1.  Create a Vercel project and link it to your GitHub repository.
-2.  Set the **Root Directory** to `backend` and deploy. Add your production environment variables.
-3.  Create a second Vercel project for the frontend.
-4.  Set the **Root Directory** to `frontend` and deploy. Set the `VITE_API_URL` environment variable to your deployed backend URL.
-
-<!-- end list -->
+* **Aditi**
+* GitHub: [@user-aditi](https://github.com/user-aditi)
