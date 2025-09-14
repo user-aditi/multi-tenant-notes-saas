@@ -61,15 +61,15 @@ app.get('/health', (req, res) => {
 });
 
 // API routes
-app.use('/auth', authRoutes);
-app.use('/notes', notesRoutes);
-app.use('/tenants', tenantRoutes);
-app.use('/admin', adminRoutes); // New admin routes
+app.use('/api/auth', authRoutes);
+app.use('/api/notes', notesRoutes);
+app.use('/api/tenants', tenantRoutes);
+app.use('/api/admin', adminRoutes);
 
-// 404 handler
-app.all(/.*/, (req, res) => {
+// Only handle API 404s
+app.all('/api/*', (req, res) => {
   res.status(404).json({
-    error: 'Route not found',
+    error: 'API Route not found',
     path: req.originalUrl,
     method: req.method
   });
